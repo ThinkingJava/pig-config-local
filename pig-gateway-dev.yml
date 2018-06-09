@@ -2,38 +2,26 @@ server:
   port: 9999
 
 spring:
-  rabbitmq:
-    host: 116.196.97.215
-    port: 5672
-    username: guest
-    password: guest
   zipkin:
     rabbitmq:
       queue: zipkin
   sleuth:
     sampler:
-      percentage: 1.0
+      percentage: 0.2
 
 zuul:
+  ribbon:
+    eager-load:
+      enabled: true
+      clients: pig-auth,pig-upms-service,pig-demo-service
   ignoredServices: '*'
   host:
-    connect-timeout-millis: 30000
-    socket-timeout-millis: 30000
-  routes:
-    pig-auth:
-      path: /auth/**
-      serviceId: pig-auth
-      stripPrefix: true
-      sensitiveHeaders:
-    pig-upms-service:
-      path: /admin/**
-      serviceId: pig-upms-service
-      stripPrefix: true
-      sensitiveHeaders:
+    connect-timeout-millis: 10000
+    socket-timeout-millis: 10000
   ratelimit:
-    key-prefix: pig-ratelimite 
-    enabled: true 
-    repository: REDIS 
+    key-prefix: pig-ratelimite
+    enabled: true
+    repository: REDIS
     behind-proxy: true
     policies:
       pig-upms-service:
@@ -43,28 +31,32 @@ zuul:
 
 security:
   validate:
-    code: false
+    code: true
+    preview: false
   sessions: stateless
   oauth2:
+    client:
+      client-id: pig
+      client-secret: pig
     resource:
       loadBalanced: true
-      user-info-uri: http://pig-auth/user
-      prefer-token-info: false
+      token-info-uri: ${security.auth.server}/oauth/check-token
       service-id: pig-gateway
+      jwt:
+         key-uri: ${security.auth.server}/oauth/token_key #解析jwt令牌所需要密钥的地址
 
-urls:
-  anon:
+ignore:
+  urls:
     - /mobile/**
     - /auth/**
     - /admin/code/*
     - /admin/smsCode/*
     - /admin/user/info
-    - /admin/menu/userTree
+    - /admin/userMenu
     - /swagger-resources/**
     - /swagger-ui.html
     - /*/v2/api-docs
     - /swagger/api-docs
     - /webjars/**
-       
-logging:
-  config: classpath:logback.xml
+  clients:
+    - app

@@ -2,11 +2,6 @@ server:
   port: 5001
 
 spring:
-  rabbitmq:
-    host: 116.196.97.215
-    port: 5672
-    username: guest
-    password: guest
   # zipkin:
   #     base-url: http://localhost:5002
   # sleuth:
@@ -25,6 +20,10 @@ turbine:
     combine-host-port: true
     cluster-name-expression: new String('default') #集群名称
 
-mobiles:
-  users:
-    - 17034642119
+notifier:
+  mobile:
+    enabled: true
+    mobiles:
+      - 17034642119
+  dingTalk:
+    enabled: true
