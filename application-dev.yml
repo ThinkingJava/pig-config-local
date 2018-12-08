@@ -11,11 +11,11 @@ server:
 spring:
   redis:
     remote: false        #cachecloud 获取
-    host: www.yangchenghuan.com
+    host: 116.196.97.215
     port: 6379
     password:
   rabbitmq:
-    host: www.yangchenghuan.com
+    host: 116.196.97.215
     port: 5672
     username: guest
     password: guest
